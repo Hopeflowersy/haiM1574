@@ -3,42 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Webcam Permission Demo</title>
+<title>Aesthetic Webcam + Balloon Game</title>
 <style>
-/* BODY */
-body { margin:0; height:100vh; display:flex; justify-content:center; align-items:center; overflow:hidden; font-family:"Poppins",sans-serif; background:linear-gradient(45deg,#ff8800,#ffffff); background-size:300% 300%; animation:gradientMove 8s ease infinite; }
+body {
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:"Poppins",sans-serif;
+    background:linear-gradient(45deg,#ff8800,#ffffff);
+    background-size:300% 300%;
+    animation:gradientMove 8s ease infinite;
+    overflow:hidden;
+}
 @keyframes gradientMove {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
-/* HIDDEN BY DEFAULT */
 #mainContent { display:none; flex-direction:column; align-items:center; }
 
-/* TITLE & WEBCAM */
 .title { font-size:32px; font-weight:700; color:#ffffff; text-shadow:0 0 12px #ffb84c,0 0 20px #ff9900; margin-bottom:10px; animation:floatTitle 3s ease-in-out infinite; }
 @keyframes floatTitle {0%{transform: translateY(0) rotate(-2deg);}50%{transform: translateY(-8px) rotate(2deg);}100%{transform: translateY(0) rotate(-2deg);}}
 
-.webcam-wrapper { display:flex; justify-content:center; align-items:center; position:relative; z-index:10; }
+.webcam-wrapper { display:flex; justify-content:center; align-items:center; position:relative; }
 #camera { width:35vw; max-width:380px; border-radius:20px; border:5px solid rgba(255,165,0,0.9); box-shadow:0 0 25px rgba(255,150,0,0.6),0 0 40px rgba(255,180,0.5); background:#000; }
 video { width:100%; border-radius:15px; }
 
-.left-text,.right-text { position:absolute; top:50%; transform:translateY(-50%); font-size:22px; font-weight:600; color:#fffaee; text-shadow:0 0 12px #ff9900,0 0 20px #ff7700; line-height:1.2; z-index:11; }
+.left-text,.right-text {
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:22px;
+    font-weight:600;
+    color:#fffaee;
+    text-shadow:0 0 12px #ff9900,0 0 20px #ff7700;
+    line-height:1.2;
+    z-index:11;
+}
 .left-text { left:-350px; text-align:right; animation:floatLeft 3s ease-in-out infinite; }
 .right-text { right:-300px; text-align:left; animation:floatRight 3s ease-in-out infinite; }
 @keyframes floatLeft {0%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-10px) rotate(-5deg);}100%{transform:translateY(0) rotate(-5deg);}}
 @keyframes floatRight {0%{transform:translateY(0) rotate(5deg);}50%{transform:translateY(-10px) rotate(5deg);}100%{transform:translateY(0) rotate(5deg);}}
 
-#popupDenied { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:linear-gradient(135deg,#ff6f91,#ffb677); padding:20px 40px; border-radius:20px; text-align:center; color:white; font-size:22px; z-index:100; box-shadow:0 0 25px #ff6f91; }
-#popupDenied button { margin-top:15px; padding:8px 20px; font-size:18px; border-radius:15px; border:none; cursor:pointer; background:#fff; color:#ff6f91; font-weight:bold;}
+#popupDenied {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:linear-gradient(135deg,#ff6f91,#ffb677);
+    padding:20px 40px;
+    border-radius:20px;
+    text-align:center;
+    color:white;
+    font-size:22px;
+    z-index:100;
+    box-shadow:0 0 25px #ff6f91;
+}
+#popupDenied button { margin-top:15px; padding:8px 20px; font-size:18px; border-radius:15px; border:none; cursor:pointer; background:#fff; color:#ff6f91; font-weight:bold; }
+
+.balloon { position:absolute; z-index:50; border-radius:50%; cursor:pointer; display:flex; justify-content:center; align-items:center; font-size:24px; color:white; box-shadow:0 0 15px rgba(255,255,255,0.6),0 0 30px rgba(255,111,145,0.4); animation:floatUp 6s linear forwards; pointer-events:auto; user-select:none; }
+@keyframes floatUp {0%{transform:translateY(0) scale(1); opacity:1;}50%{transform:translateY(-40vh) scale(1.05);}100%{transform:translateY(-80vh) scale(1); opacity:0;}}
+#scoreBoard { position: fixed; top:10px; right:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; display:none; }
+#timer { position: fixed; top:10px; left:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; display:none; }
 </style>
 </head>
 <body>
 
-<!-- POPUP IZIN -->
 <div id="popupDenied">
     Eh, izinkan kameranya dong biar seru ✨💖
-    <br><button id="closeDenied">Oke</button>
+    <br><button id="requestCamera">Izinkan Kamera</button>
 </div>
 
-<!-- KONTEN UTAMA (tersembunyi sampai izin diberikan) -->
 <div id="mainContent">
     <div class="title">the prettiest girl in the worldd ✨</div>
     <div class="webcam-wrapper">
@@ -46,30 +80,118 @@ video { width:100%; border-radius:15px; }
         <div id="camera"><video id="webcam" autoplay playsinline></video></div>
         <div class="right-text">Calon Psikoloogi 🎓🧠</div>
     </div>
+    <button id="textButton">Klik Aku ✨</button>
 </div>
+
+<div id="scoreBoard">Score: 0</div>
+<div id="timer">Time: 60s</div>
 
 <script>
 const mainContent = document.getElementById("mainContent");
 const webcam = document.getElementById("webcam");
 const popupDenied = document.getElementById("popupDenied");
-const closeDenied = document.getElementById("closeDenied");
+const requestCamera = document.getElementById("requestCamera");
+const textButton = document.getElementById("textButton");
+const scoreBoard = document.getElementById("scoreBoard");
+const timerEl = document.getElementById("timer");
+const popSound = new Audio("https://freesound.org/data/previews/522/522992_10752306-lq.mp3");
+const bgMusic = new Audio("https://files.catbox.moe/b8prwc.mp3");
 
-// MINTA IZIN KAMERA
-navigator.mediaDevices.getUserMedia({ video: true })
-.then(stream => {
-    // jika diterima
-    webcam.srcObject = stream;
-    mainContent.style.display = "flex"; // tampilkan konten utama
-    popupDenied.style.display = "none"; // sembunyikan popup izin
-})
-.catch(() => {
-    // jika ditolak, tetap tampilkan popup
-    popupDenied.style.display = "block";
-});
+let score = 0;
+let clickCount = 0;
+let gameInterval;
 
-// tombol popup
-closeDenied.addEventListener("click", ()=>{
-    popupDenied.style.display="none";
+// Fungsi minta izin kamera
+function requestWebcam() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        webcam.srcObject = stream;
+        mainContent.style.display = "flex";
+        popupDenied.style.display = "none";
+        scoreBoard.style.display = "block";
+        timerEl.style.display = "block";
+    })
+    .catch(() => {
+        alert("Kamu harus mengizinkan kamera untuk melihat konten 😅");
+    });
+}
+
+// Tombol izin kamera
+requestCamera.addEventListener("click", requestWebcam);
+
+// MINI GAME BALON
+const emojis=["💥","🎉","✨","😍","😂","🍭","🌈","🥳","💖","🌟"];
+
+function createBalloon() {
+    const balloon=document.createElement("div");
+    balloon.classList.add("balloon");
+    const size=Math.random()*30+40;
+    balloon.style.width=balloon.style.height=size+"px";
+    balloon.style.left=Math.random()*90+"vw";
+    balloon.style.top=(80+Math.random()*10)+"vh";
+    const colors=["#ff6f91","#ffb677","#ffccff","#6fc3ff","#7fff6f"];
+    balloon.style.background=`linear-gradient(145deg, ${colors[Math.floor(Math.random()*colors.length)]}, ${colors[Math.floor(Math.random()*colors.length)]})`;
+    document.body.appendChild(balloon);
+
+    balloon.clicked=false;
+    balloon.addEventListener("click",(e)=>{
+        e.stopPropagation();
+        if(balloon.clicked) return;
+        balloon.clicked=true;
+        popSound.currentTime=0; popSound.play();
+
+        const emoji=document.createElement("div");
+        emoji.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+        emoji.style.position="absolute";
+        const rect = balloon.getBoundingClientRect();
+        emoji.style.left = rect.left+rect.width/2+"px";
+        emoji.style.top = rect.top+rect.height/2+"px";
+        emoji.style.fontSize="28px";
+        document.body.appendChild(emoji);
+        setTimeout(()=>emoji.remove(),1000);
+
+        balloon.remove();
+        score++;
+        scoreBoard.textContent="Score: "+score;
+    });
+
+    setTimeout(()=>{ if(balloon.parentNode) balloon.remove(); },6000);
+}
+
+function startBalloonGame() {
+    score=0;
+    let timeLeft=60;
+    scoreBoard.textContent="Score: 0";
+    timerEl.textContent=`Time: ${timeLeft}s`;
+    gameInterval=setInterval(createBalloon,800);
+
+    const timerInterval = setInterval(()=>{
+        timeLeft--;
+        timerEl.textContent=`Time: ${timeLeft}s`;
+        if(timeLeft<=0) {
+            clearInterval(timerInterval);
+            clearInterval(gameInterval);
+        }
+    },1000);
+}
+
+// BUTTON MINI GAME
+textButton.addEventListener("click", ()=>{
+    clickCount++;
+    if(clickCount>=4){
+        if(bgMusic.paused){
+            bgMusic.volume=0;
+            bgMusic.play();
+            let vol=0;
+            const fadeIn=setInterval(()=>{
+                vol+=0.02;
+                if(vol>=0.5){ vol=0.5; clearInterval(fadeIn); startBalloonGame(); }
+                bgMusic.volume=vol;
+            },100);
+        }
+        textButton.disabled=true;
+        textButton.textContent="Ketuk/Klik balon nya yh 🎵";
+    }
 });
 </script>
 
