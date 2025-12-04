@@ -4,63 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aesthetic Webcam + Balloon Game</title>
-
 <style>
 body { margin:0; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; overflow:hidden; background:linear-gradient(45deg,#ff8800,#ffffff); background-size:300% 300%; animation:gradientMove 8s ease infinite; font-family:"Poppins",sans-serif; position:relative; }
 @keyframes gradientMove {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-
-@keyframes floatTitle { 0% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } 100% { transform: translateY(0) rotate(-2deg); } }
 .title { font-size:32px; font-weight:700; color:#ffffff; text-shadow:0 0 12px #ffb84c,0 0 20px #ff9900; margin-bottom:10px; animation:floatTitle 3s ease-in-out infinite; }
+@keyframes floatTitle {0%{transform: translateY(0) rotate(-2deg);}50%{transform: translateY(-8px) rotate(2deg);}100%{transform: translateY(0) rotate(-2deg);}}
 
-/* DISUBSTITUTE AWAL: disembunyikan dulu */
 .webcam-wrapper { display:none; justify-content:center; align-items:center; position:relative; z-index:10; }
-
 #camera { width:35vw; max-width:380px; border-radius:20px; border:5px solid rgba(255,165,0,0.9); box-shadow:0 0 25px rgba(255,150,0,0.6),0 0 40px rgba(255,180,0.5); background:#000; position:relative; z-index:10; }
 video { width:100%; border-radius:15px; }
 
 .left-text,.right-text { position:absolute; top:50%; transform:translateY(-50%); font-size:22px; font-weight:600; color:#fffaee; text-shadow:0 0 12px #ff9900,0 0 20px #ff7700; line-height:1.2; z-index:11; }
 .left-text { left:-350px; text-align:right; animation:floatLeft 3s ease-in-out infinite; }
 .right-text { right:-300px; text-align:left; animation:floatRight 3s ease-in-out infinite; }
-
-@keyframes floatLeft {0%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-10px) rotate(-5deg);}100%{transform:translateY(0) rotate(-5deg);} }
-@keyframes floatRight {0%{transform:translateY(0) rotate(5deg);}50%{transform:translateY(-10px) rotate(5deg);}100%{transform:translateY(0) rotate(5deg);} }
+@keyframes floatLeft {0%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-10px) rotate(-5deg);}100%{transform:translateY(0) rotate(-5deg);}}
+@keyframes floatRight {0%{transform:translateY(0) rotate(5deg);}50%{transform:translateY(-10px) rotate(5deg);}100%{transform:translateY(0) rotate(5deg);}}
 
 #textButton { margin-top:30px; padding:12px 25px; font-size:18px; border-radius:25px; border:none; background:#ff6f91; color:white; cursor:pointer; box-shadow:0 0 10px rgba(255,111,145,0.6); transition:background 0.3s, box-shadow 0.3s, transform 0.3s; z-index:12; position:relative;}
 #textButton:hover { background:#ff4a70; }
-
-@keyframes glowAnimation {0%,100%{box-shadow:0 0 10px #fff,0 0 20px #ff6f91,0 0 30px #ff4a70; transform:scale(1);}50%{box-shadow:0 0 20px #fff,0 0 30px #ff6f91,0 0 50px #ff4a70; transform:scale(1.05);} }
 .glow-pulse { animation:glowAnimation 1.2s infinite; }
+@keyframes glowAnimation {0%,100%{box-shadow:0 0 10px #fff,0 0 20px #ff6f91,0 0 30px #ff4a70; transform:scale(1);}50%{box-shadow:0 0 20px #fff,0 0 30px #ff6f91,0 0 50px #ff4a70; transform:scale(1.05);} }
 
-.glitter { position:fixed; top:-20px; width:12px; height:12px; background:white; opacity:0.9; border-radius:50%; pointer-events:none; z-index:1; box-shadow:0 0 10px white; animation:fall linear infinite; }
-@keyframes fall {0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(110vh) scale(0.3);opacity:0;}}
-
-.mouse-glitter { position:fixed; width:10px; height:10px; border-radius:50%; pointer-events:none; z-index:20; opacity:0.8; transform:translate(-50%,-50%); }
-
-.balloon { position:absolute; z-index:50; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; cursor:pointer; display:flex; justify-content:center; align-items:center; font-size:24px; color:white; box-shadow:0 0 15px rgba(255,255,255,0.6),0 0 30px rgba(255,111,145,0.4); animation:floatUp 6s linear forwards; pointer-events:auto; user-select:none; }
-@keyframes floatUp {0%{transform:translateY(0) scale(1); opacity:1;}50%{transform:translateY(-40vh) scale(1.05);}100%{transform:translateY(-80vh) scale(1); opacity:0;}}
-
-.burst-emoji { position:absolute; font-size:28px; pointer-events:none; animation:popUp 1s ease forwards; z-index:55; }
-@keyframes popUp {0%{transform:translateY(0) scale(0); opacity:1;}50%{transform:translateY(-20px) scale(1.3); opacity:1;}100%{transform:translateY(-50px) scale(1); opacity:0;}}
-
-.particle { position:absolute; width:8px; height:8px; border-radius:50%; pointer-events:none; opacity:1; z-index:60; }
-
-#scoreBoard { position: fixed; top:10px; right:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; opacity:0; }
-#timer { position: fixed; top:10px; left:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; opacity:0; }
-
-#gameOverPopup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:linear-gradient(135deg,#ff6f91,#ffb677); padding:30px 50px; border-radius:30px; text-align:center; font-size:24px; display:none; box-shadow:0 0 30px #ff6f91; color:white; z-index:70; }
-#gameOverPopup h1 { font-size:36px; margin:10px 0; }
-#gameOverPopup p { font-size:28px; margin:5px 0; }
-#closePopup { position:absolute; top:10px; right:15px; font-size:28px; cursor:pointer; }
-
-@keyframes slideFadeIn {0%{transform:translateY(-30px);opacity:0;}60%{transform:translateY(10px);opacity:1;}100%{transform:translateY(0);opacity:1;}}
-
+.popup-message { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:linear-gradient(135deg,#ff6f91,#ffb677); padding:20px 40px; border-radius:20px; text-align:center; color:white; font-size:22px; z-index:100; display:none; box-shadow:0 0 25px #ff6f91;}
+.popup-message button { margin-top:15px; padding:8px 20px; font-size:18px; border-radius:15px; border:none; cursor:pointer; background:#fff; color:#ff6f91; font-weight:bold;}
 </style>
 </head>
 <body>
 
 <div class="title">the prettiest girl in the worldd ✨</div>
 
-<!-- HIDDEN BY DEFAULT -->
 <div class="webcam-wrapper" id="webcamSection">
     <div class="left-text">Yang katanya mau jadi<br>independent womahhh 💅✨</div>
     <div id="camera"><video id="webcam" autoplay playsinline></video></div>
@@ -72,37 +44,37 @@ video { width:100%; border-radius:15px; }
 <audio id="bgMusic" src="https://files.catbox.moe/b8prwc.mp3"></audio>
 <audio id="popSound" src="https://freesound.org/data/previews/522/522992_10752306-lq.mp3"></audio>
 
-<div id="scoreBoard">Score: 0</div>
-<div id="timer">Time: 60s</div>
-<div id="gameOverPopup"></div>
+<div id="popupDenied" class="popup-message">
+    Eh, izinkan kameranya dong biar seru ✨💖
+    <br><button id="closeDenied">Oke</button>
+</div>
 
 <script>
-// ========== WEBCAM PERMISSION FIX ==========
+// ====== WEBCAM PERMISSION ======
 const webcamSection = document.getElementById("webcamSection");
 const webcam = document.getElementById("webcam");
+const popupDenied = document.getElementById("popupDenied");
+const closeDenied = document.getElementById("closeDenied");
 
-// Request kamera
 navigator.mediaDevices.getUserMedia({ video: true })
 .then(stream => {
     webcam.srcObject = stream;
-    webcamSection.style.display = "flex"; // TAMPILKAN SETELAH DIIZINKAN
+    webcamSection.style.display = "flex"; // tampilkan webcam + teks pesan manis
 })
 .catch(() => {
-    const msg = document.createElement("div");
-    msg.style.color = "white";
-    msg.style.fontSize = "22px";
-    msg.style.marginTop = "20px";
-    msg.style.textShadow = "0 0 10px #ff6f91";
-    msg.textContent = "Izinkan kamera dulu ya cantikk ✨💖";
-    document.body.appendChild(msg);
+    // kamera ditolak
+    popupDenied.style.display = "block";
 });
 
-// Glitter
-function createGlitter(){ const g=document.createElement("div"); g.classList.add("glitter"); const c=["#ffffff","#ffe9b0","#ffd27f","#ffb677","#ffc8ff"]; g.style.background=c[Math.floor(Math.random()*c.length)]; g.style.boxShadow=`0 0 10px ${g.style.background}`; g.style.left=Math.random()*100+"vw"; const s=Math.random()*10+4; g.style.width=g.style.height=s+"px"; document.body.appendChild(g); setTimeout(()=>g.remove(),5000);} setInterval(createGlitter,120);
+closeDenied.addEventListener("click", ()=>{
+    popupDenied.style.display = "none";
+});
 
-// Mouse glitter
-document.addEventListener("mousemove",(e)=>{ const d=document.createElement("div"); d.classList.add("mouse-glitter"); const c=["#fff","#ffe9b0","#ffd27f","#ffc8ff"]; d.style.background=c[Math.floor(Math.random()*c.length)]; d.style.boxShadow=`0 0 10px ${d.style.background}`; d.style.left=e.pageX+"px"; d.style.top=e.pageY+"px"; document.body.appendChild(d); setTimeout(()=>d.remove(),500); });
+// ====== Glitter ======
+function createGlitter(){ const g=document.createElement("div"); g.style.position="fixed"; g.style.top="-20px"; g.style.width="12px"; g.style.height="12px"; g.style.borderRadius="50%"; g.style.pointerEvents="none"; g.style.zIndex="1"; g.style.animation="fall linear infinite"; const c=["#ffffff","#ffe9b0","#ffd27f","#ffb677","#ffc8ff"]; g.style.background=c[Math.floor(Math.random()*c.length)]; g.style.boxShadow=`0 0 10px ${g.style.background}`; g.style.left=Math.random()*100+"vw"; document.body.appendChild(g); setTimeout(()=>g.remove(),5000);} setInterval(createGlitter,120);
+document.addEventListener("mousemove",(e)=>{ const d=document.createElement("div"); d.style.position="fixed"; d.style.width="10px"; d.style.height="10px"; d.style.borderRadius="50%"; d.style.pointerEvents="none"; d.style.zIndex="20"; d.style.opacity="0.8"; d.style.transform="translate(-50%,-50%)"; const c=["#fff","#ffe9b0","#ffd27f","#ffc8ff"]; d.style.background=c[Math.floor(Math.random()*c.length)]; d.style.boxShadow=`0 0 10px ${d.style.background}`; d.style.left=e.pageX+"px"; d.style.top=e.pageY+"px"; document.body.appendChild(d); setTimeout(()=>d.remove(),500); });
 
+// ====== Tombol & Game ======
 const btn=document.getElementById("textButton"); 
 const music=document.getElementById("bgMusic"); 
 const popSound=document.getElementById("popSound");
@@ -111,6 +83,30 @@ let score=0;
 let gameInterval;
 const emojis=["💥","🎉","✨","😍","😂","🍭","🌈","🥳","💖","🌟"];
 
+btn.addEventListener("click",()=>{ 
+    clickCount++; 
+    btn.classList.add("glow-pulse"); 
+    setTimeout(()=>{ if(clickCount<4) btn.classList.remove("glow-pulse"); },1200);
+
+    if(clickCount===1) btn.textContent="coba teken aku"; 
+    else if(clickCount===2) btn.textContent="lagi"; 
+    else if(clickCount===3) btn.textContent="btw ada mini game kecil nih"; 
+    else if(clickCount>=4){
+        if(music.paused){
+            music.volume=0; music.play(); let v=0;
+            const f=setInterval(()=>{
+                v+=0.02; 
+                if(v>=0.5){ v=0.5; clearInterval(f); startBalloonGame(); }
+                music.volume=v;
+            },100);
+        }
+        btn.disabled=true; 
+        btn.textContent="Ketuk/Klik balon nya yh 🎵"; 
+        btn.classList.add("glow-pulse");
+    }
+});
+
+// ====== Balloon game function (sama seperti sebelumnya) ======
 function createBalloon() {
     const b=document.createElement("div"); 
     b.classList.add("balloon");
@@ -200,29 +196,6 @@ function startBalloonGame() {
         document.getElementById("closePopup").addEventListener("click",()=>{ pop.style.display="none"; });
     },60000);
 }
-
-btn.addEventListener("click",()=>{ 
-    clickCount++; 
-    btn.classList.add("glow-pulse"); 
-    setTimeout(()=>{ if(clickCount<4) btn.classList.remove("glow-pulse"); },1200);
-
-    if(clickCount===1) btn.textContent="coba teken aku"; 
-    else if(clickCount===2) btn.textContent="lagi"; 
-    else if(clickCount===3) btn.textContent="btw ada mini game kecil nih"; 
-    else if(clickCount>=4){
-        if(music.paused){
-            music.volume=0; music.play(); let v=0;
-            const f=setInterval(()=>{
-                v+=0.02; 
-                if(v>=0.5){ v=0.5; clearInterval(f); startBalloonGame(); }
-                music.volume=v;
-            },100);
-        }
-        btn.disabled=true; 
-        btn.textContent="Ketuk/Klik balon nya yh 🎵"; 
-        btn.classList.add("glow-pulse");
-    }
-});
 </script>
 
 </body>
