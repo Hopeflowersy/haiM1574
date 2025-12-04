@@ -5,195 +5,201 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aesthetic Webcam + Balloon Game</title>
 <style>
-body {
-    margin:0;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family:"Poppins",sans-serif;
-    background:linear-gradient(45deg,#ff8800,#ffffff);
-    background-size:300% 300%;
-    animation:gradientMove 8s ease infinite;
-    overflow:hidden;
-}
+body { margin:0; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; overflow:hidden; background:linear-gradient(45deg,#ff8800,#ffffff); background-size:300% 300%; animation:gradientMove 8s ease infinite; font-family:"Poppins",sans-serif; position:relative; }
 @keyframes gradientMove {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-
-#mainContent { display:none; flex-direction:column; align-items:center; }
-
-.title { font-size:32px; font-weight:700; color:#ffffff; text-shadow:0 0 12px #ffb84c,0 0 20px #ff9900; margin-bottom:10px; animation:floatTitle 3s ease-in-out infinite; }
-@keyframes floatTitle {0%{transform: translateY(0) rotate(-2deg);}50%{transform: translateY(-8px) rotate(2deg);}100%{transform: translateY(0) rotate(-2deg);}}
-
-.webcam-wrapper { display:flex; justify-content:center; align-items:center; position:relative; }
-#camera { width:35vw; max-width:380px; border-radius:20px; border:5px solid rgba(255,165,0,0.9); box-shadow:0 0 25px rgba(255,150,0,0.6),0 0 40px rgba(255,180,0.5); background:#000; }
-video { width:100%; border-radius:15px; }
-
-.left-text,.right-text {
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    font-size:22px;
-    font-weight:600;
-    color:#fffaee;
-    text-shadow:0 0 12px #ff9900,0 0 20px #ff7700;
-    line-height:1.2;
-    z-index:11;
+/* Judul melayang */
+@keyframes floatTitle {
+    0% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+    100% { transform: translateY(0) rotate(-2deg); }
 }
+.title { font-size:32px; font-weight:700; color:#ffffff; text-shadow:0 0 12px #ffb84c,0 0 20px #ff9900; margin-bottom:10px; animation:floatTitle 3s ease-in-out infinite; }
+
+.webcam-wrapper { display:flex; justify-content:center; align-items:center; position:relative; z-index:10; }
+#camera { width:35vw; max-width:380px; border-radius:20px; border:5px solid rgba(255,165,0,0.9); box-shadow:0 0 25px rgba(255,150,0,0.6),0 0 40px rgba(255,180,0.5); background:#000; position:relative; z-index:10; }
+video { width:100%; border-radius:15px; }
+.left-text,.right-text { position:absolute; top:50%; transform:translateY(-50%); font-size:22px; font-weight:600; color:#fffaee; text-shadow:0 0 12px #ff9900,0 0 20px #ff7700; line-height:1.2; z-index:11; }
 .left-text { left:-350px; text-align:right; animation:floatLeft 3s ease-in-out infinite; }
 .right-text { right:-300px; text-align:left; animation:floatRight 3s ease-in-out infinite; }
 @keyframes floatLeft {0%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-10px) rotate(-5deg);}100%{transform:translateY(0) rotate(-5deg);}}
 @keyframes floatRight {0%{transform:translateY(0) rotate(5deg);}50%{transform:translateY(-10px) rotate(5deg);}100%{transform:translateY(0) rotate(5deg);}}
 
-#popupDenied {
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    background:linear-gradient(135deg,#ff6f91,#ffb677);
-    padding:20px 40px;
-    border-radius:20px;
-    text-align:center;
-    color:white;
-    font-size:22px;
-    z-index:100;
-    box-shadow:0 0 25px #ff6f91;
-}
-#popupDenied button { margin-top:15px; padding:8px 20px; font-size:18px; border-radius:15px; border:none; cursor:pointer; background:#fff; color:#ff6f91; font-weight:bold; }
+#textButton { margin-top:30px; padding:12px 25px; font-size:18px; border-radius:25px; border:none; background:#ff6f91; color:white; cursor:pointer; box-shadow:0 0 10px rgba(255,111,145,0.6); transition:background 0.3s, box-shadow 0.3s, transform 0.3s; z-index:12; position:relative;}
+#textButton:hover { background:#ff4a70; }
+@keyframes glowAnimation {0%,100%{box-shadow:0 0 10px #fff,0 0 20px #ff6f91,0 0 30px #ff4a70; transform:scale(1);}50%{box-shadow:0 0 20px #fff,0 0 30px #ff6f91,0 0 50px #ff4a70; transform:scale(1.05);}}
+.glow-pulse { animation:glowAnimation 1.2s infinite; }
+.glitter { position:fixed; top:-20px; width:12px; height:12px; background:white; opacity:0.9; border-radius:50%; pointer-events:none; z-index:1; box-shadow:0 0 10px white; animation:fall linear infinite; }
+@keyframes fall {0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(110vh) scale(0.3);opacity:0;}}
+.mouse-glitter { position:fixed; width:10px; height:10px; border-radius:50%; pointer-events:none; z-index:20; opacity:0.8; transform:translate(-50%,-50%); }
 
-.balloon { position:absolute; z-index:50; border-radius:50%; cursor:pointer; display:flex; justify-content:center; align-items:center; font-size:24px; color:white; box-shadow:0 0 15px rgba(255,255,255,0.6),0 0 30px rgba(255,111,145,0.4); animation:floatUp 6s linear forwards; pointer-events:auto; user-select:none; }
+.balloon { position:absolute; z-index:50; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; cursor:pointer; display:flex; justify-content:center; align-items:center; font-size:24px; color:white; box-shadow:0 0 15px rgba(255,255,255,0.6),0 0 30px rgba(255,111,145,0.4); animation:floatUp 6s linear forwards; pointer-events:auto; user-select:none; }
 @keyframes floatUp {0%{transform:translateY(0) scale(1); opacity:1;}50%{transform:translateY(-40vh) scale(1.05);}100%{transform:translateY(-80vh) scale(1); opacity:0;}}
-#scoreBoard { position: fixed; top:10px; right:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; display:none; }
-#timer { position: fixed; top:10px; left:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; display:none; }
+.burst-emoji { position:absolute; font-size:28px; pointer-events:none; animation:popUp 1s ease forwards; z-index:55; }
+@keyframes popUp {0%{transform:translateY(0) scale(0); opacity:1;}50%{transform:translateY(-20px) scale(1.3); opacity:1;}100%{transform:translateY(-50px) scale(1); opacity:0;}}
+.particle { position:absolute; width:8px; height:8px; border-radius:50%; pointer-events:none; opacity:1; z-index:60; }
+
+#scoreBoard { position: fixed; top:10px; right:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; opacity:0; }
+#timer { position: fixed; top:10px; left:10px; font-size:22px; color:white; text-shadow:0 0 10px #ff6f91; z-index:60; opacity:0; }
+
+#gameOverPopup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:linear-gradient(135deg,#ff6f91,#ffb677); padding:30px 50px; border-radius:30px; text-align:center; font-size:24px; display:none; box-shadow:0 0 30px #ff6f91; color:white; z-index:70; }
+#gameOverPopup h1 { font-size:36px; margin:10px 0; }
+#gameOverPopup p { font-size:28px; margin:5px 0; }
+#closePopup { position:absolute; top:10px; right:15px; font-size:28px; cursor:pointer; }
+
+@keyframes slideFadeIn {0%{transform:translateY(-30px);opacity:0;}60%{transform:translateY(10px);opacity:1;}100%{transform:translateY(0);opacity:1;}}
+#timer, #scoreBoard { animation: slideFadeIn 1s ease forwards; }
+
 </style>
 </head>
 <body>
 
-<div id="popupDenied">
-    Eh, izinkan kameranya dong biar seru ✨💖
-    <br><button id="requestCamera">Izinkan Kamera</button>
+<div class="title">the prettiest girl in the worldd ✨</div>
+<div class="webcam-wrapper">
+    <div class="left-text">Yang katanya mau jadi<br>independent womahhh 💅✨</div>
+    <div id="camera"><video id="webcam" autoplay playsinline></video></div>
+    <div class="right-text">Calon Psikoloogi 🎓🧠</div>
 </div>
+<button id="textButton">Klik Aku ✨</button>
 
-<div id="mainContent">
-    <div class="title">the prettiest girl in the worldd ✨</div>
-    <div class="webcam-wrapper">
-        <div class="left-text">Yang katanya mau jadi<br>independent womahhh 💅✨</div>
-        <div id="camera"><video id="webcam" autoplay playsinline></video></div>
-        <div class="right-text">Calon Psikoloogi 🎓🧠</div>
-    </div>
-    <button id="textButton">Klik Aku ✨</button>
-</div>
+<audio id="bgMusic" src="https://files.catbox.moe/b8prwc.mp3"></audio>
+<audio id="popSound" src="https://freesound.org/data/previews/522/522992_10752306-lq.mp3"></audio>
 
 <div id="scoreBoard">Score: 0</div>
 <div id="timer">Time: 60s</div>
+<div id="gameOverPopup"></div>
 
 <script>
-const mainContent = document.getElementById("mainContent");
-const webcam = document.getElementById("webcam");
-const popupDenied = document.getElementById("popupDenied");
-const requestCamera = document.getElementById("requestCamera");
-const textButton = document.getElementById("textButton");
-const scoreBoard = document.getElementById("scoreBoard");
-const timerEl = document.getElementById("timer");
-const popSound = new Audio("https://freesound.org/data/previews/522/522992_10752306-lq.mp3");
-const bgMusic = new Audio("https://files.catbox.moe/b8prwc.mp3");
+// Webcam
+navigator.mediaDevices.getUserMedia({ video: true }).then(stream => { document.getElementById("webcam").srcObject = stream; });
 
-let score = 0;
-let clickCount = 0;
+// Glitter jatuh
+function createGlitter() { const g=document.createElement("div"); g.classList.add("glitter"); const colors=["#ffffff","#ffe9b0","#ffd27f","#ffb677","#ffc8ff"]; g.style.background=colors[Math.floor(Math.random()*colors.length)]; g.style.boxShadow=`0 0 10px ${g.style.background}`; g.style.left=Math.random()*100+"vw"; const size=Math.random()*10+4; g.style.width=g.style.height=size+"px"; document.body.appendChild(g); setTimeout(()=>g.remove(),5000); }
+setInterval(createGlitter,120);
+
+// Mouse glitter
+document.addEventListener("mousemove",(e)=>{ const dot=document.createElement("div"); dot.classList.add("mouse-glitter"); const colors=["#fff","#ffe9b0","#ffd27f","#ffc8ff"]; dot.style.background=colors[Math.floor(Math.random()*colors.length)]; dot.style.boxShadow=`0 0 10px ${dot.style.background}`; dot.style.left=e.pageX+"px"; dot.style.top=e.pageY+"px"; document.body.appendChild(dot); setTimeout(()=>dot.remove(),500); });
+
+const btn=document.getElementById("textButton"); 
+const music=document.getElementById("bgMusic"); 
+const popSound=document.getElementById("popSound");
+let clickCount=0; 
+let score=0; 
 let gameInterval;
-
-// Fungsi minta izin kamera
-function requestWebcam() {
-    navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-        webcam.srcObject = stream;
-        mainContent.style.display = "flex";
-        popupDenied.style.display = "none";
-        scoreBoard.style.display = "block";
-        timerEl.style.display = "block";
-    })
-    .catch(() => {
-        alert("Kamu harus mengizinkan kamera untuk melihat konten 😅");
-    });
-}
-
-// Tombol izin kamera
-requestCamera.addEventListener("click", requestWebcam);
-
-// MINI GAME BALON
 const emojis=["💥","🎉","✨","😍","😂","🍭","🌈","🥳","💖","🌟"];
 
 function createBalloon() {
-    const balloon=document.createElement("div");
+    const balloon=document.createElement("div"); 
     balloon.classList.add("balloon");
-    const size=Math.random()*30+40;
+    const size=Math.random()*30+40; 
     balloon.style.width=balloon.style.height=size+"px";
-    balloon.style.left=Math.random()*90+"vw";
+    balloon.style.left=Math.random()*90+"vw"; 
     balloon.style.top=(80+Math.random()*10)+"vh";
-    const colors=["#ff6f91","#ffb677","#ffccff","#6fc3ff","#7fff6f"];
-    balloon.style.background=`linear-gradient(145deg, ${colors[Math.floor(Math.random()*colors.length)]}, ${colors[Math.floor(Math.random()*colors.length)]})`;
+    const gradientColors=["#ff6f91","#ffb677","#ffccff","#6fc3ff","#7fff6f"];
+    balloon.style.background=`linear-gradient(145deg, ${gradientColors[Math.floor(Math.random()*gradientColors.length)]}, ${gradientColors[Math.floor(Math.random()*gradientColors.length)]})`;
     document.body.appendChild(balloon);
 
-    balloon.clicked=false;
-    balloon.addEventListener("click",(e)=>{
+    balloon.clicked = false;
+
+    balloon.addEventListener("click", (e) => {
         e.stopPropagation();
         if(balloon.clicked) return;
-        balloon.clicked=true;
-        popSound.currentTime=0; popSound.play();
+        balloon.clicked = true;
 
-        const emoji=document.createElement("div");
-        emoji.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-        emoji.style.position="absolute";
+        popSound.currentTime = 0; popSound.play();
+
+        const emoji=document.createElement("div"); 
+        emoji.classList.add("burst-emoji"); 
+        emoji.textContent = emojis[Math.floor(Math.random()*emojis.length)];
         const rect = balloon.getBoundingClientRect();
-        emoji.style.left = rect.left+rect.width/2+"px";
-        emoji.style.top = rect.top+rect.height/2+"px";
-        emoji.style.fontSize="28px";
+        emoji.style.left = rect.left + rect.width/2 + "px";
+        emoji.style.top = rect.top + rect.height/2 + "px";
         document.body.appendChild(emoji);
         setTimeout(()=>emoji.remove(),1000);
 
+        const particleCount = Math.floor(Math.random()*6)+6;
+        for(let i=0;i<particleCount;i++){
+            const p = document.createElement("div");
+            p.classList.add("particle");
+            p.style.background = balloon.style.background;
+            p.style.left = rect.left + rect.width/2 + "px";
+            p.style.top = rect.top + rect.height/2 + "px";
+            document.body.appendChild(p);
+            const angle = Math.random()*2*Math.PI;
+            const distance = Math.random()*80+30;
+            const dx = Math.cos(angle)*distance;
+            const dy = Math.sin(angle)*distance;
+            p.animate([{transform:`translate(0,0) scale(1)`, opacity:1},
+                       {transform:`translate(${dx}px,${dy}px) scale(0.3)`, opacity:0}], 
+                      {duration:600, easing:'ease-out', fill:'forwards'});
+            setTimeout(()=>p.remove(),600);
+        }
+
         balloon.remove();
         score++;
-        scoreBoard.textContent="Score: "+score;
+        document.getElementById("scoreBoard").textContent="Score: "+score;
     });
 
     setTimeout(()=>{ if(balloon.parentNode) balloon.remove(); },6000);
 }
 
 function startBalloonGame() {
-    score=0;
-    let timeLeft=60;
-    scoreBoard.textContent="Score: 0";
-    timerEl.textContent=`Time: ${timeLeft}s`;
-    gameInterval=setInterval(createBalloon,800);
+    score = 0;
+    let timeLeft = 60; // 1 menit
+    document.getElementById("scoreBoard").textContent = "Score: 0";
+    document.getElementById("timer").textContent = `Time: ${timeLeft}s`;
 
-    const timerInterval = setInterval(()=>{
+    gameInterval = setInterval(createBalloon, 800);
+
+    const timerInterval = setInterval(() => {
         timeLeft--;
-        timerEl.textContent=`Time: ${timeLeft}s`;
-        if(timeLeft<=0) {
-            clearInterval(timerInterval);
-            clearInterval(gameInterval);
-        }
-    },1000);
+        const timerEl = document.getElementById("timer");
+        timerEl.textContent = `Time: ${timeLeft}s`;
+        if(timeLeft <= 10) timerEl.style.color = "#ff4a70"; // merah mendekati akhir
+        else if(timeLeft <= 30) timerEl.style.color = "#ffb677"; // kuning-orange
+        if(timeLeft <= 0) clearInterval(timerInterval);
+    }, 1000);
+
+    setTimeout(() => {
+        clearInterval(gameInterval);
+        document.querySelectorAll(".balloon").forEach(b => b.remove());
+        let message = "", emoji = "";
+        if(score <= 10){ message="cupu bat"; emoji="😅"; }
+        else if(score <= 20){ message="cupu"; emoji="😅"; }
+        else if(score <= 30){ message="lumayan dehh"; emoji="😎"; }
+        else if(score <= 49){ message="jago dkit"; emoji="😏"; }
+        else { message="hebat jg sipaling girl boss ini"; emoji="✨💖"; }
+
+        const popup = document.getElementById("gameOverPopup");
+        popup.style.display = "block"; 
+        popup.innerHTML = `<span id="closePopup">×</span><h1>Game Over!</h1><p>Score: ${score}</p><p>${message} ${emoji}</p>`;
+
+        document.getElementById("closePopup").addEventListener("click", () => {
+            popup.style.display = "none";
+        });
+    }, 60000);
 }
 
-// BUTTON MINI GAME
-textButton.addEventListener("click", ()=>{
-    clickCount++;
-    if(clickCount>=4){
-        if(bgMusic.paused){
-            bgMusic.volume=0;
-            bgMusic.play();
-            let vol=0;
+btn.addEventListener("click",()=>{ 
+    clickCount++; 
+    btn.classList.add("glow-pulse"); 
+    setTimeout(()=>{ if(clickCount<4) btn.classList.remove("glow-pulse"); },1200);
+    if(clickCount===1) btn.textContent="coba teken aku"; 
+    else if(clickCount===2) btn.textContent="lagi"; 
+    else if(clickCount===3) btn.textContent="btw ada mini game kecil nih"; 
+    else if(clickCount>=4){
+        if(music.paused){
+            music.volume=0; music.play(); let vol=0;
             const fadeIn=setInterval(()=>{
-                vol+=0.02;
+                vol+=0.02; 
                 if(vol>=0.5){ vol=0.5; clearInterval(fadeIn); startBalloonGame(); }
-                bgMusic.volume=vol;
+                music.volume=vol;
             },100);
         }
-        textButton.disabled=true;
-        textButton.textContent="Ketuk/Klik balon nya yh 🎵";
+        btn.disabled=true; 
+        btn.textContent="Ketuk/Klik balon nya yh 🎵"; 
+        btn.classList.add("glow-pulse");
     }
 });
 </script>
-
 </body>
 </html>
